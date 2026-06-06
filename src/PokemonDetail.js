@@ -5,6 +5,7 @@ import AbilitiesSection from './components/AbilitiesSection';
 import StatsSection from './components/StatsSection';
 import PhysicalAttributes from './components/PhysicalAttributes';
 import MoveList from './components/MoveList';
+import EvolutionChain from './components/EvolutionChain';
 
 function PokemonDetail() {
   const { name } = useParams();
@@ -44,17 +45,25 @@ function PokemonDetail() {
       <Link to="/" className="back-link">← Back to Search</Link>
 
       <div className="detail-container">
-        <div className="detail-image">
-          <img
-            src={pokemon.sprites?.other?.['official-artwork']?.front_default || pokemon.sprites?.front_default}
-            alt={pokemon.name}
-          />
+        {/* Pokemon Header Box - Top Section */}
+        <div className="pokemon-header-box">
+          <div className="pokemon-image-evolution">
+            <div className="detail-image">
+              <img
+                src={pokemon.sprites?.other?.['official-artwork']?.front_default || pokemon.sprites?.front_default}
+                alt={pokemon.name}
+              />
+            </div>
+            <EvolutionChain pokemonName={pokemon.name} />
+          </div>
+          <div className="pokemon-header-info">
+            <h1>{pokemon.name.toUpperCase()}</h1>
+            <p className="detail-id">#{String(pokemon.id).padStart(4, '0')}</p>
+          </div>
         </div>
 
-        <div className="detail-info">
-          <h1>{pokemon.name.toUpperCase()}</h1>
-          <p className="detail-id">#{String(pokemon.id).padStart(4, '0')}</p>
-
+        {/* Stats and Types Row */}
+        <div className="stats-types-row">
           <div className="detail-section">
             <h2>Types</h2>
             <div className="types">
@@ -67,7 +76,9 @@ function PokemonDetail() {
           </div>
 
           <StatsSection stats={pokemon.stats} />
+        </div>
 
+        <div className="detail-info">
           <AbilitiesSection abilities={pokemon.abilities} />
 
           <PhysicalAttributes
