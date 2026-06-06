@@ -46,12 +46,6 @@ function App() {
     fetchPokemon();
   }, [page, searchTerm, fetchPokemon]);
 
-  useEffect(() => {
-    // If a search term is active, don't re-fetch the paginated list when page changes
-    if (searchTerm.trim()) return;
-    fetchPokemon();
-  }, [page, searchTerm]);
-
   const handlePrevPage = () => {
     setPage((p) => Math.max(1, p - 1));
   };
