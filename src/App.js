@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PokemonDetail from './PokemonDetail';
 import './App.css';
 import SearchBar from './components/SearchBar';
@@ -15,19 +15,17 @@ function App() {
   const [totalCount, setTotalCount] = useState(0);
 
   // Fetch Pokemon data from PokeAPI
-  const fetchPokemon = async (query = '') => {
+  const fetchPokemon = useCallback(async (query = '') => {
     setLoading(true);
     setError(null);
     try {
       if (query.trim()) {
-        // Search for specific Pokemon by name
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${query.toLowerCase()}`);
         if (!response.ok) throw new Error(`Pokemon "${query}" not found`);
         const data = await response.json();
         setPokemon([data]);
         setTotalCount(1);
       } else {
-        // Fetch initial list of Pokemon (first 150)
         const offset = (page - 1) * perPage;
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${perPage}&offset=${offset}`);
         if (!response.ok) throw new Error('Failed to fetch Pokemon list');
@@ -41,22 +39,18 @@ function App() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, perPage]);
+
+  useEffect(() => {
+    if (searchTerm.trim()) return;
+    fetchPokemon();
+  }, [page, searchTerm, fetchPokemon]);
 
   useEffect(() => {
     // If a search term is active, don't re-fetch the paginated list when page changes
     if (searchTerm.trim()) return;
     fetchPokemon();
   }, [page, searchTerm]);
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchTerm.trim()) {
-      // When searching, reset page info and fetch the single pokemon
-      setPage(1);
-      fetchPokemon(searchTerm);
-    }
-  };
 
   const handlePrevPage = () => {
     setPage((p) => Math.max(1, p - 1));

@@ -34,12 +34,6 @@ function PokemonDetail() {
   if (error) return <div className="detail-error">Error: {error}</div>;
   if (!pokemon) return <div className="detail-error">Pokemon not found</div>;
 
-  const formatMoveName = (s) =>
-    s
-      .split('-')
-      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-      .join(' ');
-
   return (
     <div className="pokemon-detail">
       <Link to="/" className="back-link">← Back to Search</Link>
